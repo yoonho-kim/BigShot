@@ -3,153 +3,171 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>우주 스타 리그 | 클라스 팀 VS 광모 팀</title>
+    <title>Big Shot | 포장지 제작 전문 기업</title>
     <meta
       name="description"
-      content="친구들과 함께 클라스 팀과 광모 팀의 대결 승자를 예측하고 실시간 배팅 비율을 확인하는 우주 스타 리그 페이지입니다."
+      content="Big Shot은 브랜드 포장지, 쇼핑백, 패키지 시트를 제작하고 판매하는 한국의 포장 솔루션 기업입니다."
     />
-    <link rel="preload" as="image" href="assets/space-league-arena.png" />
+    <link rel="preload" as="image" href="assets/big-shot-packaging-hero.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <main class="league-shell">
-      <section class="phone-frame" aria-labelledby="page-title">
-        <div class="phone-screen">
-          <div class="sensor" aria-hidden="true"></div>
-          <h1 class="sr-only" id="page-title">우주 스타 리그: 클라스 팀 VS 광모 팀</h1>
+  <body class="intro-playing">
+    <div class="intro-loader" data-intro aria-label="Big Shot intro loading">
+      <p>BIG SHOT</p>
+      <div class="intro-progress" aria-hidden="true"><span></span></div>
+      <small>Packaging Paper Studio</small>
+    </div>
 
-          <header class="statusbar" aria-label="앱 상태">
-            <time>9:41</time>
-            <div class="status-icons" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </header>
+    <div class="cursor-dot" aria-hidden="true"></div>
 
-          <header class="topbar">
-            <a class="brand" href="/" aria-label="우주 스타 리그 홈">
-              <span class="brand-mark" aria-hidden="true">USL</span>
-              <span>
-                <em>Tonight Match</em>
-                <strong>우주 스타 리그</strong>
-              </span>
-            </a>
-            <div class="top-actions" aria-label="경기 상태">
-              <div class="diamond-pill" aria-label="보유 다이아">
-                <span aria-hidden="true">💎</span>
-                <strong id="diamond-count">10</strong>
-              </div>
-              <button class="live-pill" id="admin-trigger" type="button" aria-label="관리자 접근">
-                <span class="live-dot" aria-hidden="true"></span>
-                <strong id="deadline-label">LIVE</strong>
-              </button>
-            </div>
-          </header>
+    <header class="site-header" data-header>
+      <div class="header-cluster">
+        <button class="pill-link" type="button" data-open-contact><span aria-hidden="true">→</span> 상담문의</button>
+      </div>
+      <a class="brand" href="#home" aria-label="Big Shot 홈">
+        <strong>BIG SHOT</strong>
+        <span>Packaging Paper Studio</span>
+      </a>
+      <div class="menu-cluster" data-menu-cluster>
+        <nav class="menu-flyout" aria-label="펼침 메뉴">
+          <button type="button">서비스</button>
+          <button type="button">파트너</button>
+          <button type="button">후기</button>
+          <button type="button">문의</button>
+        </nav>
+        <button class="menu-pill" type="button" data-menu-toggle aria-expanded="false"><span aria-hidden="true">→</span> MENU</button>
+      </div>
+    </header>
 
-          <section class="score-panel" aria-label="현재 배팅 스코어">
-            <div>
-              <p>전체투표건수</p>
-              <output id="total-count" aria-live="polite">0</output>
-            </div>
-            <div class="match-progress">
-              <strong><span id="ratio-a">0</span> / <span id="ratio-b">0</span></strong>
-              <span>pick ratio</span>
-            </div>
-          </section>
+    <dialog class="contact-modal" data-contact-modal>
+      <form class="contact-modal-panel" method="dialog">
+        <button class="modal-close" type="button" data-close-contact aria-label="닫기">×</button>
+        <h2>상담문의</h2>
+        <p>필요한 포장지와 일정만 간단히 남겨주세요.</p>
+        <div class="service-options" aria-label="문의 유형">
+          <button type="button">포장지 제작</button>
+          <button type="button">쇼핑백 제작</button>
+          <button type="button">디자인 상담</button>
+        </div>
+        <label>
+          <span>이름 *</span>
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          <span>이메일 *</span>
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          <span>전화번호 *</span>
+          <input type="tel" name="phone" required />
+        </label>
+        <label>
+          <span>문의내용</span>
+          <textarea name="message" rows="5" placeholder="수량, 사이즈, 희망 납기 등을 적어주세요."></textarea>
+        </label>
+        <button class="modal-submit" type="submit">문의 보내기</button>
+      </form>
+    </dialog>
 
-          <section class="diamond-bet-panel" aria-label="다이아 배팅 설정">
-            <label for="bet-amount">배팅 다이아</label>
-            <div>
-              <input id="bet-amount" type="number" min="1" max="1000" step="1" value="1" inputmode="numeric" />
-              <span>DIA</span>
-            </div>
-          </section>
-
-          <section class="challenge-grid" aria-label="팀 선택">
-            <article class="team-card team-card-a" aria-labelledby="team-a-name">
-              <div class="card-visual" aria-hidden="true"></div>
-              <div class="card-arrow" aria-hidden="true">↗</div>
-              <p class="team-label">CLASS CHALLENGE</p>
-              <h2 id="team-a-name">클라스 팀</h2>
-              <p class="team-tag" id="team-a-subtitle">전통강자</p>
-              <dl class="team-stats">
-                <div>
-                  <dt>배당</dt>
-                  <dd id="team-a-odds">대기</dd>
-                </div>
-              </dl>
-              <p class="closed-stat" id="team-a-final" hidden>0표 · 0%</p>
-              <button class="bet-button bet-a" type="button" data-team="a">클라스 선택</button>
-            </article>
-
-            <article class="team-card team-card-b" aria-labelledby="team-b-name">
-              <div class="card-visual" aria-hidden="true"></div>
-              <div class="card-arrow" aria-hidden="true">↗</div>
-              <p class="team-label">GWANGMO CHALLENGE</p>
-              <h2 id="team-b-name">광모 팀</h2>
-              <p class="team-tag" id="team-b-subtitle">도전자 87 대표 젊은 피</p>
-              <dl class="team-stats">
-                <div>
-                  <dt>배당</dt>
-                  <dd id="team-b-odds">대기</dd>
-                </div>
-              </dl>
-              <p class="closed-stat" id="team-b-final" hidden>0표 · 0%</p>
-              <button class="bet-button bet-b" type="button" data-team="b">광모 선택</button>
-            </article>
-          </section>
-
-          <section class="versus-panel" aria-label="실시간 배팅 비율">
-            <div class="versus-head">
-              <p class="event-kicker">LIVE ODDS</p>
-              <p class="user-pick" id="user-pick">아직 배팅하지 않았습니다.</p>
-            </div>
-            <div class="meter" aria-hidden="true">
-              <span id="meter-a"></span>
-              <span id="meter-b"></span>
-            </div>
-            <div class="team-strip">
-              <span>클라스 팀</span>
-              <strong>VS</strong>
-              <span>광모 팀</span>
-            </div>
-          </section>
-
-          <section class="live-board" aria-label="실시간 댓글">
-            <div class="board-head">
-              <div>
-                <p>Comments</p>
-                <h2>최신 댓글 3개</h2>
-              </div>
-              <span>Live</span>
-            </div>
-            <form class="comment-form" id="comment-form">
-              <input id="comment-input" type="text" maxlength="120" placeholder="댓글을 남겨주세요" required />
-              <button type="submit">등록</button>
-            </form>
-            <ol class="activity-list" id="activity-list" aria-live="polite"></ol>
-          </section>
+    <main id="home">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/big-shot-packaging-hero.png" alt="Big Shot 포장지 롤과 쇼핑백 제품 샘플" />
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow reveal">Korean Packaging Paper Studio</p>
+          <h1 id="hero-title" class="reveal">
+            Wrap it big
+            <span>custom packaging paper & brand materials</span>
+          </h1>
         </div>
       </section>
 
-      <dialog class="password-dialog" id="password-dialog">
-        <form method="dialog" class="password-box" id="password-form">
-          <h2>관리자 입장</h2>
-          <label>
-            <span>패스워드</span>
-            <input id="admin-password" type="password" autocomplete="current-password" required />
-          </label>
-          <p class="dialog-status" id="dialog-status" role="status"></p>
-          <div class="dialog-actions">
-            <button class="ghost-button" value="cancel" type="button" id="password-cancel">취소</button>
-            <button class="primary-button" type="submit">입장</button>
+      <section class="number-showcase" aria-labelledby="design-count-title">
+        <div class="number-showcase-inner reveal">
+          <p class="number-kicker">Design Library</p>
+          <h2 id="design-count-title">
+            <span data-big-count="200">0</span><span>+</span>
+          </h2>
+          <p>종류의 디자인</p>
+        </div>
+      </section>
+
+      <section class="zoom-words" aria-label="Big Shot creative transition" data-zoom-section>
+        <div class="zoom-words-sticky">
+          <span class="zoom-ghost zoom-ghost-a">BRAND</span>
+          <span class="zoom-ghost zoom-ghost-b">PAPER</span>
+          <h2 data-zoom-text>BIG VIBES</h2>
+        </div>
+      </section>
+
+      <section class="partners" id="partners" aria-labelledby="partners-title">
+        <div class="partners-head">
+          <p class="eyebrow">Our Partners</p>
+          <h2 id="partners-title">BIG SHOT PARTNER</h2>
+        </div>
+        <div class="partner-grid" aria-label="Big Shot partner brands">
+          <article class="logo-samsung"><span>SAMSUNG</span></article>
+          <article class="logo-hynix"><span>SK hynix</span></article>
+          <article class="logo-doosan"><span>DOOSAN</span></article>
+          <article class="logo-hyundai"><span>HYUNDAI</span></article>
+          <article class="logo-lg"><span>LG</span></article>
+          <article class="logo-naver"><span>NAVER</span></article>
+          <article class="logo-kakao"><span>kakao</span></article>
+          <article class="logo-posco"><span>POSCO</span></article>
+        </div>
+      </section>
+
+      <section class="references" id="references" aria-labelledby="references-title">
+        <div class="reference-scene" data-reference-section>
+          <div class="reference-sticky">
+            <h2 id="references-title">REFERENCES</h2>
+            <div class="truth-letters" aria-label="Nothing but the truth">
+              <p class="truth-final">NOTHING BUT THE TRUTH</p>
+              <span data-letter data-x="-330" data-y="170" data-r="-8">N</span>
+              <span data-letter data-x="-250" data-y="245" data-r="5">O</span>
+              <span data-letter data-x="-130" data-y="330" data-r="-2">T</span>
+              <span data-letter data-x="-40" data-y="260" data-r="7">H</span>
+              <span data-letter data-x="55" data-y="185" data-r="-4">I</span>
+              <span data-letter data-x="140" data-y="126" data-r="5">N</span>
+              <span data-letter data-x="230" data-y="250" data-r="-5">G</span>
+              <span data-letter data-x="-96" data-y="72" data-r="3">B</span>
+              <span data-letter data-x="78" data-y="318" data-r="-3">U</span>
+              <span data-letter data-x="245" data-y="360" data-r="6">T</span>
+              <span data-letter data-x="115" data-y="16" data-r="0">T</span>
+              <span data-letter data-x="192" data-y="52" data-r="-4">H</span>
+              <span data-letter data-x="265" data-y="88" data-r="2">E</span>
+              <span data-letter data-x="360" data-y="150" data-r="-6">T</span>
+              <span data-letter data-x="440" data-y="206" data-r="5">R</span>
+              <span data-letter data-x="500" data-y="340" data-r="-2">U</span>
+              <span data-letter data-x="590" data-y="268" data-r="7">T</span>
+              <span data-letter data-x="660" data-y="238" data-r="-3">H</span>
+            </div>
           </div>
-        </form>
-      </dialog>
+        </div>
+
+        <div class="review-grid" aria-label="Big Shot 고객 후기">
+          <article>
+            <h3>Maison Bake</h3>
+            <p class="stars" aria-label="5점 만점">★★★★★</p>
+            <p>매장 오픈 일정이 촉박했는데 시안부터 납품까지 빠르게 맞춰줬습니다. 포장지만 바꿨는데 제품이 훨씬 선명하게 보여요.</p>
+            <footer>김하린<br /><span>브랜드 매니저</span></footer>
+          </article>
+          <article>
+            <h3>Glow Lab</h3>
+            <p class="stars" aria-label="5점 만점">★★★★★</p>
+            <p>소량 테스트와 정규 발주를 자연스럽게 이어갈 수 있어서 좋았습니다. 색감 재현과 종이 질감 안내가 특히 정확했습니다.</p>
+            <footer>박도윤<br /><span>마케팅 리드</span></footer>
+          </article>
+          <article>
+            <h3>Seoul Market</h3>
+            <p class="stars" aria-label="5점 만점">★★★★★</p>
+            <p>반복 패턴, 쇼핑백, 포장 시트를 한 번에 정리해줘서 내부 커뮤니케이션이 훨씬 쉬워졌습니다. 재주문도 편합니다.</p>
+            <footer>이서연<br /><span>운영 총괄</span></footer>
+          </article>
+        </div>
+      </section>
     </main>
 
-    <script src="supabase-config.js"></script>
-    <script src="league.js"></script>
+    <script src="site.js"></script>
   </body>
 </html>
