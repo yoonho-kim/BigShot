@@ -14,6 +14,11 @@ const closeContactButton = document.querySelector("[data-close-contact]");
 const menuCluster = document.querySelector("[data-menu-cluster]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
 let scrollMotionFrame = 0;
+let scrollMotionSettled = false;
+let scrollMotionInitialized = false;
+
+const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const motionValues = new Map();
 
 const scrollTextItems = [
   { element: document.querySelector(".hero h1"), strength: -0.16, vertical: -0.05 },
@@ -140,6 +145,28 @@ document.addEventListener("click", (event) => {
 });
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const lerp = (from, to, amount) => from + (to - from) * amount;
+
+const smoothValue = (key, target, options = {}) => {
+  if (reduceMotionQuery.matches || !scrollMotionInitialized) {
+    motionValues.set(key, target);
+    return target;
+  }
+
+  const ease = options.ease ?? 0.14;
+  const threshold = options.threshold ?? 0.02;
+  const current = motionValues.get(key) ?? target;
+  const next = lerp(current, target, ease);
+
+  if (Math.abs(target - next) <= threshold) {
+    motionValues.set(key, target);
+    return target;
+  }
+
+  scrollMotionSettled = false;
+  motionValues.set(key, next);
+  return next;
+};
 
 const updateTruthLetters = (progress) => {
   const finalGap = Math.min(window.innerWidth * 0.034, 36);
@@ -169,6 +196,7 @@ const updateTruthLetters = (progress) => {
 
 const updateScrollMotion = () => {
   scrollMotionFrame = 0;
+  scrollMotionSettled = true;
   const scrollY = window.scrollY;
   const viewportHeight = window.innerHeight || 1;
 
@@ -180,37 +208,54 @@ const updateScrollMotion = () => {
     const progress = clamp(-rect.top / scrollable, 0, 1);
     const scale = 0.72 + progress * 5.4;
     const endGlow = clamp((progress - 0.72) / 0.28, 0, 1);
+    const easedProgress = smoothValue("zoom-progress", progress, { ease: 0.13, threshold: 0.001 });
+    const easedScale = smoothValue("zoom-scale", scale, { ease: 0.13, threshold: 0.01 });
+    const easedEndGlow = smoothValue("zoom-end", endGlow, { ease: 0.13, threshold: 0.001 });
+    const ghostX = smoothValue("ghost-x", progress * 80, { ease: 0.12, threshold: 0.01 });
+    const ghostY = smoothValue("ghost-y", -progress * 60, { ease: 0.12, threshold: 0.01 });
 
-    zoomSection.style.setProperty("--zoom-progress", progress.toFixed(3));
-    zoomSection.style.setProperty("--zoom-scale", scale.toFixed(3));
-    zoomSection.style.setProperty("--zoom-end", endGlow.toFixed(3));
-    zoomSection.style.setProperty("--ghost-x", `${(progress * 80).toFixed(2)}px`);
-    zoomSection.style.setProperty("--ghost-y", `${(-progress * 60).toFixed(2)}px`);
+    zoomSection.style.setProperty("--zoom-progress", easedProgress.toFixed(3));
+    zoomSection.style.setProperty("--zoom-scale", easedScale.toFixed(3));
+    zoomSection.style.setProperty("--zoom-end", easedEndGlow.toFixed(3));
+    zoomSection.style.setProperty("--ghost-x", `${ghostX.toFixed(2)}px`);
+    zoomSection.style.setProperty("--ghost-y", `${ghostY.toFixed(2)}px`);
   }
 
   if (partnersTitle) {
     const rect = partnersTitle.getBoundingClientRect();
     const distance = (rect.top + rect.height / 2 - viewportHeight / 2) / viewportHeight;
-    partnersTitle.style.setProperty("--partners-title-x", `${clamp(distance * -120, -140, 140).toFixed(2)}px`);
+    const x = smoothValue("partners-title-x", clamp(distance * -120, -140, 140), { ease: 0.15, threshold: 0.01 });
+    partnersTitle.style.setProperty("--partners-title-x", `${x.toFixed(2)}px`);
   }
 
   if (referenceSection) {
     const rect = referenceSection.getBoundingClientRect();
     const scrollable = Math.max(1, viewportHeight * 0.82);
     const progress = clamp(-rect.top / scrollable, 0, 1);
-    updateTruthLetters(progress);
+    const easedProgress = smoothValue("truth-progress", progress, { ease: 0.12, threshold: 0.001 });
+    updateTruthLetters(easedProgress);
   }
 
-  scrollTextItems.forEach(({ element, strength, vertical }) => {
+  scrollTextItems.forEach(({ element, strength, vertical }, index) => {
     const rect = element.getBoundingClientRect();
-    const center = rect.top + rect.height / 2;
+    const currentY = motionValues.get(`scroll-text-${index}-y`) ?? 0;
+    const center = rect.top - currentY + rect.height / 2;
     const distance = (center - viewportHeight / 2) / viewportHeight;
-    const x = clamp(distance * viewportHeight * strength, -90, 90);
-    const y = clamp(distance * viewportHeight * vertical, -34, 34);
+    const x = smoothValue(`scroll-text-${index}-x`, clamp(distance * viewportHeight * strength, -90, 90), {
+      ease: 0.16,
+      threshold: 0.01,
+    });
+    const y = smoothValue(`scroll-text-${index}-y`, clamp(distance * viewportHeight * vertical, -34, 34), {
+      ease: 0.16,
+      threshold: 0.01,
+    });
 
     element.style.setProperty("--scroll-text-x", `${x.toFixed(2)}px`);
     element.style.setProperty("--scroll-text-y", `${y.toFixed(2)}px`);
   });
+
+  scrollMotionInitialized = true;
+  if (!scrollMotionSettled) requestScrollMotion();
 };
 
 const requestScrollMotion = () => {
